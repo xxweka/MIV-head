@@ -138,7 +138,7 @@ python3 fithead.py --backbone=vit_dino &> interim_results.log
 
 ### 2.3 Collect measures of adaptation cost
 
-To calculate and print out "training GFLOPS (per task)" of the MIV-head, TSA and eTT, use the argument "--gflops" (default is False). For example, running the following command provides GFLOPS information (without "accuracy" and "training time-duration"),
+To calculate and print out "training GFLOPs (per task)" of the MIV-head, TSA and eTT, use the argument "--gflops" (default is False). For example, running the following command provides GFLOPs information (without "accuracy" and "training time-duration"),
 
 ```
 python3 mivhead.py --backbone=vit_dino --patch_size=16 --gflops &> gflops_only.log
