@@ -179,6 +179,7 @@ specified (by default).
 
 ## 3. Citation
 If you find this repository useful, please cite [our paper](https://arxiv.org/abs/2507.00401)
+
 TODO: bibtex
 
 
