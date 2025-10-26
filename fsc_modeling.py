@@ -403,18 +403,20 @@ class CAPBlock(nn.Module):
 
             co_excite = self.coe_excite(sqz)  # (b, 1|q, ch)
             if self.skip_conn:
-                addq = self.qlinear(query) if self.qlinear else query # if self.persist_size else self.qlinear(query)
-                excited_query = query_branch * co_excite + addq
+                excited_query = query_branch * co_excite + attn_q
             else:
                 excited_query = query_branch * co_excite  # (b,q,ch)
-            if co_excite.size(-2) == 1:  # broadcastable?
-                if self.skip_conn:
-                    addb = self.klinear(bag) if self.klinear else bag  # if self.persist_size else self.klinear(bag)
-                    excited_v = v * co_excite + addb
-                else:
-                    excited_v = v * co_excite
+            if co_excite.size(-2) > 1:  # (b,q,ch)
+                co_excite = co_excite.unsqueeze(-2)
+                v = v.unsqueeze(-3)
+                addk = k.unsqueeze(-3)
+            else:  # broadcastable
+                addk = k
+            # (b,q,k,ch)
+            if self.skip_conn:
+                excited_v = v * co_excite + addk
             else:
-                excited_v = v.unsqueeze(-3) * co_excite.unsqueeze(-2)  # (b,q,k,ch)
+                excited_v = v * co_excite
         else:
             excited_v = v
             excited_query = query_branch
@@ -578,3 +580,4 @@ def accuracy(output, target, topk=None):
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
+
